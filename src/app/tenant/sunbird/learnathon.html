@@ -48,6 +48,10 @@
         <a class=" nav-itmes1 text-white d-sm-none" href="./index.html">NULP</a>
         <a class=" nav-itmes1 text-white d-sm-none" target="_blank" href="./document/Learnathon_Guidelines_V2.pdf">SUBMISSION GUIDELINES</a>
 
+
+
+
+
         <div class="ui compact menu">
           <div class="ui simple dropdown item">
             <div class="identive-theme d-sm-none">INDICATIVE THEMES &nbsp;
@@ -68,7 +72,10 @@
             </div>
           </div>
         </div>
-              
+       
+
+        
+
         <a class="text-white d-sm-none" href="./participate.html">WHO CAN PARTICIPATE</a>
         <a href="/resources?learnathon" class="learn-btn text-white">REGISTER/ SIGN IN</a>
         <div class="ui compact menu learn-handburger">
@@ -133,19 +140,19 @@
 
   <div class="total-section">
     <div>
-      <div id="total" class="number">656</div>
+      <div class="number">656</div>
       <div class="num-cont">Total Registrations</div>
     </div>
     <div>
-      <div id="individual" class="number">86</div>
+      <div class="number">86</div>
       <div class="num-cont">Individuals</div>
     </div>
     <div>
-      <div id="institution" class="number">187</div>
-      <div class="num-cont">Groups</div>
+      <div class="number">187</div>
+      <div class="num-cont">Institutions</div>
     </div>
     <div>
-      <div id="cities" class="number">634</div>
+      <div class="number">634</div>
       <div class="num-cont">Cities</div>
     </div>
   </div>
@@ -257,6 +264,16 @@
     </div>
   </div>
   <!-- Themes section end here -->
+
+
+
+
+
+
+
+
+
+
   <!-- registration section start here -->
   <div class="section-holder solution-holder">
     <div>
@@ -403,17 +420,6 @@
     });
 
   </script>
-    <script>
-      fetch("/counts")
-        .then((response) => response.json())
-        .then((data) => {
-          ({cityCount,groupCategoryCount,individualCategoryCount,institutionCount,totalCount} = data.result.data.liveLearnCounts[0]);
-          document.querySelector("#total").innerText = totalCount - 1;
-          document.querySelector("#individual").innerText = individualCategoryCount;
-          document.querySelector("#institution").innerText = institutionCount;
-          document.querySelector("#cities").innerText = cityCount;
-        })
-      </script>
 </body>
 
 </html>
