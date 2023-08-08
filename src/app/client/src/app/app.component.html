@@ -73,8 +73,8 @@
     </div>
     <app-modal-wrapper #frameWorkPopUp *ngIf="showFrameWorkPopUp" [config]="{disableClose: true, panelClass: 'overflow-visible'}">
       <ng-template sbModalContent let-data>
-        <app-popup [dialogProps]="data" [buttonLabel]="resourceService?.frmelmnts?.btn?.submit"
-          [isGuestUser]="isGuestUser" (submit)="updateFrameWork($event)"></app-popup>
+        <!-- <app-popup [dialogProps]="data" [buttonLabel]="resourceService?.frmelmnts?.btn?.submit"
+          [isGuestUser]="isGuestUser" (submit)="updateFrameWork($event)"></app-popup> -->
       </ng-template>
     </app-modal-wrapper>
     <app-tnc-popup (close)="onAcceptTnc()" #termsAndCondPopUp *ngIf="showTermsAndCondPopUp">
