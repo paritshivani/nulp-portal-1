@@ -4,11 +4,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@sunbird/shared';
 import { SharedFeatureModule } from '@sunbird/shared-feature';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CoursePlayerComponent, CourseConsumptionHeaderComponent, CourseConsumptionPageComponent,
   CurriculumCardComponent  } from './components';
-import { CourseConsumptionService, CourseBatchService, CourseProgressService , AssessmentScoreService } from './services';
 import { CoreModule } from '@sunbird/core';
 import { PlayerHelperModule } from '@sunbird/player-helper';
 import {
@@ -28,7 +27,7 @@ import { NotificationModule } from '../notification/notification.module';
 import { DiscussionModule } from '../discussion/discussion.module';
 import { PendingchangesGuard } from '@sunbird/public';
 import { GroupsModule } from '../groups';
-
+import { CourseProgressExhaustModule } from '../dashboard/course-progress-exhaust.module';
 
 export const csUserServiceFactory = (csLibInitializerService: CsLibInitializerService) => {
   if (!CsModule.instance.isInitialised) {
@@ -42,6 +41,12 @@ export const csCourseServiceFactory = (csLibInitializerService: CsLibInitializer
   }
   return CsModule.instance.courseService;
 };
+export const csNotificationServiceFactory = (csLibInitializerService: CsLibInitializerService) => {
+  if (!CsModule.instance.isInitialised) {
+    csLibInitializerService.initializeCs();
+  }
+  return CsModule.instance.notificationService;
+};
 
 @NgModule({
   imports: [
@@ -51,6 +56,7 @@ export const csCourseServiceFactory = (csLibInitializerService: CsLibInitializer
     SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule,
     SuiProgressModule, SuiRatingModule, SuiCollapseModule,
     FormsModule,
+    ReactiveFormsModule,
     CourseConsumptionRoutingModule,
     CoreModule,
     TelemetryModule,
@@ -58,15 +64,18 @@ export const csCourseServiceFactory = (csLibInitializerService: CsLibInitializer
     CommonConsumptionModule,
     NotificationModule,
     DiscussionModule,
-    GroupsModule
+    GroupsModule,
+    CourseProgressExhaustModule
   ],
   providers: [
     { provide: 'CS_USER_SERVICE', useFactory: csUserServiceFactory, deps: [CsLibInitializerService] },
     { provide: 'CS_COURSE_SERVICE', useFactory: csCourseServiceFactory, deps: [CsLibInitializerService] },
+    { provide: 'CS_NOTIFICATION_SERVICE', useFactory: csNotificationServiceFactory, deps: [CsLibInitializerService] },
     PendingchangesGuard
   ],
   declarations: [CoursePlayerComponent, CourseConsumptionHeaderComponent, AssessmentPlayerComponent,
     CourseConsumptionPageComponent, BatchDetailsComponent, CurriculumCardComponent, UnEnrollBatchComponent,
-    AssessmentPlayerComponent, CourseCompletionComponent, CourseDetailsComponent, CertificateNameUpdatePopupComponent]
+    AssessmentPlayerComponent, CourseCompletionComponent, CourseDetailsComponent, CertificateNameUpdatePopupComponent,
+    ]
 })
 export class CourseConsumptionModule { }

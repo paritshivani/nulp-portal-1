@@ -8,6 +8,9 @@ import * as _ from 'lodash-es';
 import { UsageService } from '../usage/usage.service';
 import { map } from 'rxjs/operators';
 import { TelemetryService } from '@sunbird/telemetry';
+import { DataService} from './../../../core/services/data/data.service';
+import { PublicDataService} from './../../../core/services/public-data/public-data.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 /**
  * Service to get course progress dashboard
@@ -19,7 +22,7 @@ import { TelemetryService } from '@sunbird/telemetry';
 /**
  * @class CourseProgressService
  */
-export class CourseProgressService {
+export class CourseProgressService  {
 
   /**
    * To get api urls
@@ -27,8 +30,10 @@ export class CourseProgressService {
   public config: ConfigService;
 
   constructor(private learnerService: LearnerService,
-    config: ConfigService, private usageService: UsageService, private telemetryService: TelemetryService) {
-    this.config = config;
+    config: ConfigService, private usageService: UsageService, 
+    private telemetryService: TelemetryService, private dataService: DataService, 
+    private http: HttpClient, private publicDataService: PublicDataService) {
+      this.config = config;
   }
 
   /**
@@ -42,7 +47,7 @@ export class CourseProgressService {
           'filters': {
             'courseId': requestParam.courseId,
             'status': requestParam.status,
-            'createdBy': requestParam.createdBy,
+            // 'createdBy': requestParam.createdBy,
             'mentors': requestParam.mentors
           },
           'sort_by': { 'createdDate': 'desc' }
@@ -70,6 +75,79 @@ export class CourseProgressService {
     if ( _.get(requestParam, 'username')) {
       option.param['userName'] = requestParam.username;
     }
+    return this.learnerService.get(option);
+  }
+
+
+  /**
+   * To method calls the get the course progress exhaust data
+   */
+  getCourseProgressExhaustData(requestParam) {
+
+    let option: any;
+    if (requestParam.batchId !== undefined) {
+      option = {
+        url: this.config.urlConFig.URLS.BATCH.COURSE_PROGRESS_EXHAUST + '/' + requestParam.courseId,
+        param: {
+          batchid: requestParam.batchId,
+          limit: requestParam.limit,
+          offset: requestParam.offset,
+        }
+      };
+    }
+    else {
+      option = {
+        url: this.config.urlConFig.URLS.BATCH.COURSE_PROGRESS_EXHAUST + '/' + requestParam.courseId,
+        param: {
+          limit: requestParam.limit,
+          offset: requestParam.offset,
+        }
+      };
+    }
+    if (_.get(requestParam, 'query')) {
+      option.param['query'] = requestParam.query;
+    }
+
+    console.log("API option -", option);
+
+    return this.learnerService.get(option);
+  }
+
+
+  /**
+   * To method calls the get the course progress export data
+   */
+  getExportData(requestParam) {
+
+    let option: any;
+    if (requestParam.batchId !== undefined) {
+      option = {
+        url: this.config.urlConFig.URLS.BATCH.COURSE_PROGRESS_EXHAUST_CSV + '/' + requestParam.courseId,
+        param: {
+          batchid: requestParam.batchId,
+        }
+      };
+    }
+    else {
+      option = {
+        url: this.config.urlConFig.URLS.BATCH.COURSE_PROGRESS_EXHAUST_CSV + '/' + requestParam.courseId,
+      };
+    }
+
+    if (_.get(requestParam, 'query')) {
+      option.param['query'] = requestParam.query;
+    }
+
+    return this.learnerService.get(option);
+  }
+
+  /**
+   * To method calls the get the course data
+   */
+  getCourseData(requestParam) {
+    const option = {
+      url: this.config.urlConFig.URLS.COURSE.HIERARCHY + '/'  + requestParam
+    };
     return this.learnerService.get(option);
   }
 

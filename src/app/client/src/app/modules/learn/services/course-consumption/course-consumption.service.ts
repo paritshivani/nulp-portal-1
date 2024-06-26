@@ -7,7 +7,7 @@ import { ServerResponse, ResourceService, ToasterService } from '@sunbird/shared
 import { CourseProgressService } from '../courseProgress/course-progress.service';
 import * as _ from 'lodash-es';
 import * as TreeModel from 'tree-model';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NavigationHelperService } from '@sunbird/shared';
 import dayjs from 'dayjs';
 
@@ -167,6 +167,10 @@ getAllOpenBatches(contents) {
   canViewDashboard(courseHierarchy) {
     return (this.canCreateBatch(courseHierarchy) || this.permissionService.checkRolesPermissions(['COURSE_MENTOR']));
   }
+
+  canViewCourseProgressReports(courseHierarchy) {
+    return (this.permissionService.checkRolesPermissions(['ORG_ADMIN', 'SYSTEM_ADMINISTRATION']));
+  } 
 
   canAddCertificates(courseHierarchy) {
     return  this.canCreateBatch(courseHierarchy) && this.isTrackableCollection(courseHierarchy) && _.lowerCase(_.get(courseHierarchy, 'credentials.enabled')) === 'yes';

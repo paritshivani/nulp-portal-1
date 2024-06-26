@@ -9,12 +9,13 @@ import dayjs from 'dayjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class CourseProgressService {
   /**
  * Reference of content service.
  */
   public contentService: ContentService;
-
+   
   /**
    * Reference of config service
    */
@@ -162,7 +163,7 @@ export class CourseProgressService {
   /**
    * to make api call to server
    */
-  private updateContentStateToServer(data) {
+  updateContentStateToServer(data) {
     const req = {
       contentId: data.contentId,
       batchId: data.batchId,

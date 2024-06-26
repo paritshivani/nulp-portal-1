@@ -1,6 +1,6 @@
 import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { ResourceService, ToasterService } from '@sunbird/shared';
 import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
@@ -71,12 +71,13 @@ export class CreateEditGroupComponent implements OnInit, OnDestroy, AfterViewIni
       ]],
       description: [_.get(this.groupDetails, 'description') || '', [
       ]],
-      groupToc: [!_.isEmpty(this.groupDetails), [Validators.requiredTrue]]
+      // groupToc: [!_.isEmpty(this.groupDetails), [Validators.requiredTrue]]
+      groupToc: [!_.isEmpty(this.groupDetails)]
     });
   }
 
   isFieldValid(field: string) {
-    if (this.groupId) { this.groupForm.patchValue({ groupToc: true }); }
+    // if (this.groupId) { this.groupForm.patchValue({ groupToc: true }); }
 
     if (field === 'name') {
       this.groupForm.patchValue({ name: _.trimStart(this.groupForm.get(field).value), });
@@ -94,10 +95,12 @@ export class CreateEditGroupComponent implements OnInit, OnDestroy, AfterViewIni
       this.groupService.createGroup(request).pipe(takeUntil(this.unsubscribe$)).subscribe(group => {
         if (group) {
           this.toasterService.success(this.resourceService.messages.smsg.grpcreatesuccess);
+         
         }
         this.groupService.emitCloseForm();
         this.disableBtn = false;
         this.closeModal({ modalId });
+        // location.reload()
       }, err => {
         this.disableBtn = false;
         const errCode: string = _.get(err, 'response.body.params.err') || _.get(err, 'params.err');
@@ -130,6 +133,7 @@ export class CreateEditGroupComponent implements OnInit, OnDestroy, AfterViewIni
       updatedForm.status = _.get(this.groupDetails, 'status');
       this.groupService.updateGroup(this.groupId, updatedForm).pipe(takeUntil(this.unsubscribe$)).subscribe(group => {
         this.toasterService.success(this.resourceService.messages.smsg.m003);
+        location.reload()
         this.groupService.emitCloseForm();
         this.closeModal({ modalId });
         this.disableBtn = false;

@@ -19,7 +19,12 @@ import {
   OrganisationComponent, CourseConsumptionComponent, CourseProgressComponent, UsageReportsComponent,
   DataTableComponent, DataChartComponent, ReportComponent, ReportSummaryComponent, ListAllReportsComponent,
   AddSummaryModalComponent, CourseDashboardComponent, ReIssueCertificateComponent, DashboardSidebarComponent, DatasetComponent, MapComponent, FilterComponent,AllReportsComponent, ReportsComponent,OrganizationReportComponent, UserReportComponent,ContentReportComponent, ContentLeaderboardComponent,ContentCategoryWiseComponent, CourseReportComponent,CourseCategoryWiseComponent,
+<<<<<<< HEAD
   ContentCreationStaticsComponent,CityWiseReportComponent, DeptCityWiseReportComponent, ContentDeptWiseReportComponent,learnathonDashboardComponent
+=======
+  ContentCreationStaticsComponent,CityWiseReportComponent, DeptCityWiseReportComponent, ContentDeptWiseReportComponent,
+  CourseProgressExhaustComponent
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
 } from './components';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 // import { ChartsModule } from 'ng2-charts';
@@ -53,7 +58,11 @@ import { OrgManagementModule } from '@sunbird/org-management';
 import { CertificateDirectivesModule } from 'sb-svg2pdf';
 import { CsModule } from '@project-sunbird/client-services';
 import { CsLibInitializerService } from 'CsLibInitializer';
+<<<<<<< HEAD
 import { from } from 'rxjs';
+=======
+import { CourseProgressExhaustModule } from './course-progress-exhaust.module';
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
 
 export const csCourseServiceFactory = (csLibInitializerService: CsLibInitializerService) => {
   if (!CsModule.instance.isInitialised) {
@@ -91,7 +100,8 @@ export const csCourseServiceFactory = (csLibInitializerService: CsLibInitializer
     CoreModule,
     ChartModule,
     CertificateDirectivesModule,
-    OrgManagementModule
+    OrgManagementModule,
+    CourseProgressExhaustModule
   ],
   declarations: [CourseConsumptionComponent, OrganisationComponent, CourseProgressComponent, UsageReportsComponent,
     DataTableComponent, DataChartComponent, ListAllReportsComponent, ReportSummaryComponent, ReportComponent, AddSummaryModalComponent,
@@ -112,4 +122,4 @@ export const csCourseServiceFactory = (csLibInitializerService: CsLibInitializer
   ],
   
 })
-export class DashboardModule { }
+export class DashboardModule { } 

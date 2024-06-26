@@ -44,7 +44,22 @@ const setZipConfig = (req, res, type, encoding, dist = '../') => {
 module.exports = (app, keycloak) => {
 
   app.set('view engine', 'ejs')
-
+  app.set('views', path.join(__dirname, '../dist/webapp'));
+  const webapp = (req, res) => {
+    const filePath = path.join(__dirname, '../dist/webapp', 'index.ejs');
+    console.log('Checking file path:', filePath);
+    
+    if (req.path.includes('/webapp') && fs.existsSync(filePath)) {
+      console.log('File exists. Rendering file:', filePath);
+      req.includeUserDetail = true;
+      const templateVariables=getLocals(req)
+      res.render('index', templateVariables);
+    }
+    else{
+      console.log("React build folder path not exist");
+    }
+  };
+  app.get('/webapp', webapp);
   app.get(['*.js', '*.css'], (req, res, next) => {
     res.setHeader('Cache-Control', 'public, max-age=' + oneDayMS * 30)
     res.setHeader('Expires', new Date(Date.now() + oneDayMS * 30).toUTCString())
@@ -92,7 +107,20 @@ module.exports = (app, keycloak) => {
 
   app.all('/play/quiz/*', playContent);
   app.all('/manage-learn/*', MLContent);
-
+  app.all('/webapp/*', 
+  session({
+    secret: envHelper.PORTAL_SESSION_SECRET_KEY,
+    resave: false,
+    cookie: {
+      maxAge: envHelper.sunbird_session_ttl
+    },
+    saveUninitialized: false,
+    store: memoryStore
+  }), 
+  keycloak.middleware({ admin: '/callback', logout: '/logout' }), 
+  keycloak.protect(), 
+  webapp
+);
   app.all('/get/dial/:dialCode',(req,res,next) => {
       if (_.get(req, 'query.channel')) {
           getdial(req,res);
@@ -104,13 +132,13 @@ module.exports = (app, keycloak) => {
   app.all(['/announcement', '/announcement/*', '/search', '/search/*',
   '/orgType', '/orgType/*', '/dashBoard', '/dashBoard/*',
   '/workspace', '/workspace/*', '/profile', '/profile/*', '/learn', '/learn/*', '/resources', '/discussion-forum/*',
-  '/resources/*', '/myActivity', '/myActivity/*', '/org/*', '/manage', '/contribute','/contribute/*','/groups','/groups/*', '/my-groups','/my-groups/*','/certs/configure/*',
-   '/observation', '/observation/*','/solution','/solution/*','/questionnaire','/questionnaire/*', '/uci-admin', '/uci-admin/*','/program'], 
+  '/resources/*', '/myActivity', '/myActivity/*', '/org/*', '/manage/*', '/contribute','/contribute/*','/groups','/groups/*', '/my-groups','/my-groups/*','/certs/configure/*',
+   '/observation', '/observation/*','/solution','/solution/*','/questionnaire','/questionnaire/*', '/uci-admin', '/uci-admin/*','/program',"/all","/category/:category","/addConnections","/message","/home","/contents","/certificate","/learningHistory","/continueLearning","/help","/framework","/addConnections","/domainList","/contentList/:pageNumber","/joinCourse/*","/joinCourse/:contentId","/player","/pdf","/noresult","/user","/search","/view-all/:category","/nulp-chatbot"],
   session({
     secret: envHelper.PORTAL_SESSION_SECRET_KEY,
     resave: false,
     cookie: {
-      maxAge: envHelper.sunbird_session_ttl 
+      maxAge: envHelper.sunbird_session_ttl
     },
     saveUninitialized: false,
     store: memoryStore
@@ -121,12 +149,12 @@ module.exports = (app, keycloak) => {
     '/explore/*', '/:slug/explore', '/:slug/explore/*', '/play/*', '/:slug/play/*',  '/explore-course', '/explore-course/*',
     '/:slug/explore-course', '/:slug/explore-course/*', '/:slug/signup', '/signup', '/:slug/sign-in/*',
     '/sign-in/*', '/download/*', '/accountMerge/*','/:slug/accountMerge/*', '/:slug/download/*', '/certs/*', '/:slug/certs/*', '/recover/*', '/:slug/recover/*', '/explore-groups',
-    '/guest-profile'], 
+    '/guest-profile','/chatbot'],
     session({
       secret: envHelper.PORTAL_SESSION_SECRET_KEY,
       resave: false,
       cookie: {
-        maxAge: envHelper.sunbird_session_ttl 
+        maxAge: envHelper.sunbird_session_ttl
       },
       saveUninitialized: false,
       store: memoryStore
@@ -209,6 +237,7 @@ function getLocals(req) {
   locals.sunbirdDefaultFileSize = envHelper.SUNBIRD_DEFAULT_FILE_SIZE;
   locals.baseUrl = null;
   locals.blobUrl = envHelper.sunbird_portal_cdn_blob_url;
+  locals.uciBotPhoneNumber = envHelper.sunbird_portal_uci_bot_phone_number;
   return locals
 }
 
@@ -310,6 +339,9 @@ const redirectTologgedInPage = (req, res) => {
       const courseUrl = urlWithOutSlug.includes('/explore-course/course/');
       if (courseUrl) {
         return res.redirect(urlWithOutSlug.replace('/explore-course/course/', '/learn/course/'));
+      }
+      if (urlWithOutSlug.startsWith('/play/collection')) {
+        return res.redirect(`/resources${urlWithOutSlug}`);
       }
 			if (_.get(redirectRoutes, `/${req.originalUrl.split('/')[1]}`)) {
 				const routes = _.get(redirectRoutes, `/${req.originalUrl.split('/')[1]}`);

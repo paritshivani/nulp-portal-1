@@ -152,8 +152,22 @@ let envVariables = {
   // Default Language Configuration
   sunbird_default_language: env.sunbird_portal_default_language || 'en',
   sunbird_primary_bundle_language: env.sunbird_portal_primary_bundle_language || 'en',
+  // Elite DB
+  elite_system_db_username: env.elite_system_db_username,
+  elite_system_db_host:env.elite_system_db_host,
+  elite_system_db_database:env.elite_system_db_database,
+  elite_system_db_password:env.elite_system_db_password,
+  elite_system_db_port:env.elite_system_db_port,
 
-
+  // Gmeet API secret
+  event_meet_id:env.event_meet_id,
+  event_meet_secret:env.event_meet_secret,
+  google_refresh_token :env.google_refresh_token,
+  // Direct Connect 
+  CHAT_SECRET_KEY:env.CHAT_SECRET_KEY,
+  CRON_TIME:env.CRON_TIME,
+  NOTIFICATION_CRON_TIME:env.NOTIFICATION_CRON_TIME,
+  api_base_url:env.api_base_url,
   // Service(s) Base URL(s)
   learner_Service_Local_BaseUrl: env.sunbird_learner_service_local_base_url || 'http://learner-service:9000',
   content_Service_Local_BaseUrl: env.sunbird_content_service_local_base_url || 'http://content-service:5000',
@@ -206,7 +220,7 @@ let envVariables = {
   // PhraseApp configuration
   PHRASE_APP: {
     phrase_authToken: env.sunbird_phraseApp_token || '',
-    phrase_project: env.phrase_project || 'NULP Portal,Sunbird Creation',
+    phrase_project: env.phrase_project || 'DIKSHA Portal,Sunbird Creation',
     phrase_locale: env.phrase_locale || ['en-IN', 'bn-IN', 'hi-IN', 'kn-IN', 'mr-IN', 'ur-IN', 'te-IN', 'ta-IN'],
     phrase_fileformat: env.phrase_fileformat || 'json'
   },

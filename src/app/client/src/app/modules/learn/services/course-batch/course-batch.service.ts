@@ -1,6 +1,6 @@
 import { of as observableOf, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Injectable, Input, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { ConfigService, ServerResponse } from '@sunbird/shared';
 import { SearchParam, LearnerService, UserService, ContentService, SearchService } from '@sunbird/core';
 import * as _ from 'lodash-es';
@@ -34,7 +34,7 @@ export class CourseBatchService {
     };
     return this.learnerService.post(option);
   }
-  getUserList(requestParam: SearchParam = {}): Observable<ServerResponse> {
+  getUserList(requestParam: SearchParam = {},type =''): Observable<ServerResponse> {
     if (_.isEmpty(requestParam) && this.defaultUserList) {
       return observableOf(this.defaultUserList);
     } else {
@@ -51,13 +51,18 @@ export class CourseBatchService {
       if (requestParam.limit) {
         option.data.request['limit'] = requestParam.limit;
       }
-      const mentorOrg = this.userService.userProfile.roleOrgMap['CONTENT_CREATOR'];
-      if (mentorOrg && mentorOrg.includes(this.userService.rootOrgId)) {
-        option.data.request.filters['rootOrgId'] = this.userService.rootOrgId;
-      } else if (mentorOrg) {
-        option.data.request.filters['organisations.organisationId'] = mentorOrg;
+      if (type === 'participant') {
+        delete option.data.request.filters['rootOrgId'];
+      }else{
+        const mentorOrg = this.userService.userProfile.roleOrgMap['CONTENT_CREATOR'];
+        if (mentorOrg && mentorOrg.includes(this.userService.rootOrgId)) {
+          console.log('option before includes', option);
+          option.data.request.filters['rootOrgId'] = this.userService.rootOrgId;
+        } else if (mentorOrg) {
+          option.data.request.filters['organisations.organisationId'] = mentorOrg;
+        }
       }
-      option.data.request.filters['organisations.roles'] = ['COURSE_MENTOR'];
+      // option.data.request.filters['organisations.roles'] = ['COURSE_MENTOR'];
       return this.learnerService.post(option).pipe(map((data) => {
         if (_.isEmpty(requestParam)) {
           this.defaultUserList = data;
@@ -139,20 +144,30 @@ export class CourseBatchService {
     };
     return this.learnerService.patch(option);
   }
-  addUsersToBatch(request, batchId) {
+  addUsersToBatch(userId, batchId, courseId) {
     const option = {
-      url: this.configService.urlConFig.URLS.BATCH.ADD_USERS + '/' + batchId,
+      url: this.configService.urlConFig.URLS.BATCH.ADD_USERS,
       data: {
-        request: request
+        request: {
+          courseId: courseId,
+          batchId: batchId,
+          userId: userId
+        }
       }
     };
     return this.learnerService.post(option);
   }
 
-  removeUsersFromBatch(batchId, request) {
+  removeUsersFromBatch(userId, batchId, courseId) {
     const option = {
-      url: this.configService.urlConFig.URLS.BATCH.REMOVE_USERS + '/' + batchId,
-      data: request
+      url: this.configService.urlConFig.URLS.BATCH.REMOVE_USERS,
+      data: {
+        request: {
+          courseId: courseId,
+          batchId: batchId,
+          userId: userId
+        }
+      }
     };
     return this.learnerService.post(option);
   }

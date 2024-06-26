@@ -29187,10 +29187,10 @@ ASD95gAAAABJRU5ErkJggg==" transform="matrix(0.24 0 0 0.24 0.1696 3.995538e-002)"
 <text id="certTitle" transform="matrix(1 0 0 1 903.6454 867.7642)" class="st4 st2 st5">Certificate of Completion</text>
 <g transform="translate(0,-10)">
 	<text id="svg_96" transform="matrix(1 0 0 1 1348.049 1063.8964)" class="st1 st2 st3">This is to certify that</text>
-	<text id="svg_97" transform="matrix(1 0 0 1 1339.6343 1188.1327)" class="st1 st6 st7">${recipientName}</text>
+	<text text-anchor="middle" id="svg_97" transform="matrix(1 0 0 1 1701.6343 1188.1327)" class="st1 st6 st7">{{credentialSubject.recipientName}}</text>
 	<text id="svg_98" transform="matrix(1 0 0 1 1068.6855 1307.7595)" class="st1 st2 st3">has successfully completed the course</text>
-	<text id="svg_99" transform="matrix(1 0 0 1 1373.1686 1441.192)" class="st1 st6 st7">${courseName}</text>
-	<text id="svg_101" transform="matrix(1 0 0 1 1341.7853 1579.2111)" class="st1 st6 st7">on ${issuedDate}</text>
+	<text text-anchor="middle" id="svg_99" transform="matrix(1 0 0 1 1701.1686 1441.192)" class="st1 st6 st7">{{credentialSubject.trainingName}}</text>
+	<text text-anchor="middle" id="svg_101" transform="matrix(1 0 0 1 1701.7853 1579.2111)" class="st1 st6 st7">on {{dateFormat issuanceDate "DD MM YYYY"}}</text>
 </g>
 <g>
 	<g>

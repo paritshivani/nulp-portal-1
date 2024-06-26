@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular
 import { ActivatedRoute, Router } from '@angular/router';
 import {combineLatest, Subject, forkJoin} from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
-import { RouterNavigationService, ResourceService, ToasterService, ServerResponse, NavigationHelperService } from '@sunbird/shared';
+import { RouterNavigationService, ResourceService, ToasterService, NavigationHelperService } from '@sunbird/shared';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserService } from '@sunbird/core';
 import { CourseConsumptionService, CourseBatchService } from './../../../services';
@@ -212,7 +212,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
           });
         }
         this.initializeUpdateForm();
-        // this.getEnabledForumId();
+        this.getEnabledForumId();
         this.fetchParticipantDetails();
       }, (err) => {
         if (err.error && err.error.params.errmsg) {
@@ -431,12 +431,14 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
         onAdd: () => {
         }
       });
-      $('#mentors').dropdown({
-        fullTextSearch: true,
-        forceSelection: false,
-        onAdd: () => {
-        }
-      });
+      if (!$('#mentors input.search').val()) {
+        $('#mentors').dropdown({
+          fullTextSearch: true,
+          forceSelection: false,
+          onAdd: () => {
+          }
+        });
+      }
       $('#mentors input.search').attr('aria-label', 'select batch mentor'); // fix accessibility on screen reader
       $('#participant input.search').on('keyup', (e) => {
         this.getUserListWithQuery($('#participant input.search').val(), 'participant');
@@ -454,7 +456,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
       filters: {'status': '1'},
       query: query
     };
-    this.courseBatchService.getUserList(requestBody).pipe(takeUntil(this.unsubscribe))
+    this.courseBatchService.getUserList(requestBody,type).pipe(takeUntil(this.unsubscribe))
       .subscribe((res) => {
         const userList = this.sortUsers(res);
         if (type === 'participant') {
@@ -488,19 +490,11 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   private removeParticipantFromBatch(batchId, participantId) {
-    const userRequest = {
-      'request': {
-        userIds: participantId
-      }
-    };
-    this.courseBatchService.removeUsersFromBatch(batchId, userRequest);
+    return this.courseBatchService.removeUsersFromBatch(participantId,batchId, this.courseId);
   }
 
-  private addParticipantToBatch(batchId, participants) {
-    const userRequest = {
-      userIds: _.compact(participants)
-    };
-    return this.courseBatchService.addUsersToBatch(userRequest, batchId);
+  private addParticipantToBatch(batchId, participantId) {
+    return this.courseBatchService.addUsersToBatch(participantId, batchId,this.courseId);
   }
 
   public updateBatch() {
@@ -512,6 +506,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
     if (this.batchUpdateForm.value.enrollmentType !== 'open') {
       participants = $('#participant').dropdown('get value') ? $('#participant').dropdown('get value').split(',') : [];
     }
+    participants = participants.filter(participantId => !mentors.some(mentorId => mentorId == participantId));
     if ((this.selectedMentors).length > 0) {
       _.forEach(this.selectedMentors, (obj) => {
         selectedMentors.push(obj.id);
@@ -542,14 +537,21 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
     const requests = [];
     requests.push(this.courseBatchService.updateBatch(requestBody));
     if (this.removedUsers && this.removedUsers.length > 0) {
-      requests.push(this.removeParticipantFromBatch(this.batchId, this.removedUsers));
+      _.forEach(this.removedUsers, (id) => {
+        requests.push(this.removeParticipantFromBatch(this.batchId, id));
+      });
     }
     if (participants && participants.length > 0) {
-      requests.push(this.addParticipantToBatch(this.batchId, participants));
+      const userRequest = {
+        userIds: _.compact(participants)
+      };
+      _.forEach(userRequest.userIds, (participantId) => {
+        requests.push(this.addParticipantToBatch(this.batchId, participantId));
+      });
     }
 
     forkJoin(requests).subscribe(results => {
-      this.disableSubmitBtn = false;
+      // this.disableSubmitBtn = false;
       this.toasterService.success(this.resourceService.messages.smsg.m0034);
       this.reload();
       this.checkIssueCertificate(this.batchId, this.batchDetails);
@@ -708,6 +710,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
     if (this.createForumRequest && this.callCreateDiscussion) {
       this.discussionService.createForum(this.createForumRequest).subscribe(resp => {
         this.handleInputChange('enable-DF-yes');
+        location.reload();
         this.toasterService.success(_.get(this.resourceService, 'messages.smsg.m0065'));
       }, error => {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
@@ -724,6 +727,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
       };
       this.discussionService.removeForum(requestBody).subscribe(resp => {
         this.handleInputChange('enable-DF-no');
+        location.reload();
         this.toasterService.success(_.get(this.resourceService, 'messages.smsg.m0066'));
       }, error => {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
@@ -751,4 +755,22 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
     };
     this.telemetryService.interact(telemetryData);
   }
+  getSelectedMembers() {
+    if(this.batchUpdateForm.value.enrollmentType !== 'open'){
+      return $('#mentors').dropdown('get value') ? $('#mentors').dropdown('get value').split(',') : [];
+    } else {
+      return [];
+    }
+  }
+  checkList(field){
+    if(field =='mentor' ){
+      this.disableSubmitBtn = true;
+      console.log(typeof($('#mentors').dropdown('get value')))
+    }else if(field =='participant'){
+      this.disableSubmitBtn = true;
+
+    }
+
+  }  
+  
 }

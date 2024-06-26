@@ -18,6 +18,7 @@ import { ExplorePageComponent } from './components';
 import { ContentSectionModule } from 'content-section';
 import {ObservationModule} from '../observation/observation.module';
 
+<<<<<<< HEAD
 // @Hack isLearnathon
 import { UploadContentLearnathonComponent } from './components/upload-content-learnathon/upload-content-learnathon.component';
 import { ListUploadcontentLearnathonComponent } from './components/list-uploadcontent-learnathon/list-uploadcontent-learnathon.component';
@@ -26,6 +27,8 @@ import { CommonFormElementsModule } from 'common-form-elements-web-v9';
 import { LearnathonLandingPageComponent } from './components/learnathon-landing-page/learnathon-landing-page.component'; 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+=======
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
 @NgModule({
   // @Hack isLearnathon
   declarations: [ExplorePageComponent, UploadContentLearnathonComponent, ListUploadcontentLearnathonComponent, LearnathonLandingPageComponent],
@@ -39,6 +42,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SharedFeatureModule,
     SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule, SuiProgressModule,
     SuiRatingModule, SuiCollapseModule, SuiDimmerModule, WebExtensionModule,
+<<<<<<< HEAD
     CommonConsumptionModule, ContentSearchModule, SlickModule, ContentSectionModule,ObservationModule, CommonConsumptionModule, 
     ContentSearchModule, 
     SlickModule, 
@@ -50,5 +54,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   
   // @Hack isLearnathon
   providers: [WorkSpaceService]
+=======
+    CommonConsumptionModule, ContentSearchModule, SlickModule, ContentSectionModule, ObservationModule
+  ]
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
 })
 export class ExplorePageModule { }

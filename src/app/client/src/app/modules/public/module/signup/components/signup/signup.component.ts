@@ -1,46 +1,41 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import {
   ResourceService,
-  ConfigService,
-  ServerResponse,
-  ToasterService,
-  NavigationHelperService,
-  UtilService,
-  RecaptchaService
+  NavigationHelperService
 } from '@sunbird/shared';
-import { SignupService } from './../../services';
-import { TenantService, TncService } from '@sunbird/core';
+import { TenantService } from '@sunbird/core';
 import { TelemetryService } from '@sunbird/telemetry';
 import * as _ from 'lodash-es';
 import { IStartEventInput, IImpressionEventInput, IInteractEventEdata } from '@sunbird/telemetry';
 import { DeviceDetectorService } from 'ngx-device-detector';
+<<<<<<< HEAD
 // import { ActivatedRoute } from '@angular/router';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { AddusserService } from '../../../../../dashboard/services/addusser/addusser.service';
 
+=======
+import { Router, ActivatedRoute } from '@angular/router';
+import { RecaptchaComponent } from 'ng-recaptcha';
+
+export enum SignUpStage {
+  BASIC_INFO = 'basic_info',
+  ONBOARDING_INFO = 'onboarding_info',
+  EMAIL_PASSWORD = 'email_password',
+  OTP = 'otp'
+}
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss']
+  styleUrls: ['./signup.component.scss','./signup_form.component.scss']
 })
 export class SignupComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('captchaRef') captchaRef: RecaptchaComponent;
   public unsubscribe = new Subject<void>();
-  signUpForm: FormGroup;
-  sbFormBuilder: FormBuilder;
-  // showContact = 'phone';
-  showContact = 'email';
-  disableSubmitBtn = true;
-  disableForm = true;
-  showPassword = false;
-  captchaResponse = '';
-  googleCaptchaSiteKey: string;
-  showSignUpForm = true;
-  showUniqueError = '';
+  signUpForm;
   tenantDataSubscription: Subscription;
   logo: string;
   tenantName: string;
@@ -50,13 +45,8 @@ export class SignupComponent implements OnInit, OnDestroy, AfterViewInit {
   submitInteractEdata: IInteractEventEdata;
   telemetryCdata: Array<{}>;
   instance: string;
-  tncLatestVersion: string;
-  termsAndConditionLink: string;
-  passwordError: string;
-  showTncPopup = false;
-  birthYearOptions: Array<number> = [];
-  isMinor: Boolean = false;
   formInputType: string;
+<<<<<<< HEAD
   isP1CaptchaEnabled: any;
   yearOfBirth: string;
   isIOSDevice: boolean = false;
@@ -107,10 +97,21 @@ allInstitutions: any;
     public configService: ConfigService,  public recaptchaService: RecaptchaService,
     public tncService: TncService, public addUserService: AddusserService, public router: Router,) {
     this.sbFormBuilder = formBuilder;
+=======
+  isIOSDevice = false;
+  signupStage: SignUpStage;
+  get Stage() { return SignUpStage; }
+
+  constructor(public resourceService: ResourceService, public tenantService: TenantService, public deviceDetectorService: DeviceDetectorService,
+    public activatedRoute: ActivatedRoute, public telemetryService: TelemetryService,
+    public navigationhelperService: NavigationHelperService, private router: Router) {
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
   }
 
   ngOnInit() {
+    this.signupStage = SignUpStage.BASIC_INFO;
     this.isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
+<<<<<<< HEAD
     // this.mode = this.signUpdata.controls.contactType.value;
     this.tncService.getTncConfig().subscribe((data: ServerResponse) => {
       this.telemetryLogEvents('fetch-terms-condition', true);
@@ -136,6 +137,8 @@ allInstitutions: any;
       this.isLearnathon = true;
     }
 
+=======
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
     this.instance = _.upperCase(this.resourceService.instance || 'SUNBIRD');
     this.tenantDataSubscription = this.tenantService.tenantData$.subscribe(
       data => {
@@ -152,44 +155,12 @@ allInstitutions: any;
       }
     );
 
-    try {
-      this.googleCaptchaSiteKey = (<HTMLInputElement>document.getElementById('googleCaptchaSiteKey')).value;
-    } catch (error) {
-      this.googleCaptchaSiteKey = '';
-    }
     this.initializeFormFields();
     this.setInteractEventData();
 
     // Telemetry Start
     this.signUpTelemetryStart();
 
-    this.initiateYearSelecter();
-    // disabling the form as age should be selected
-    this.signUpForm.disable();
-    this.isP1CaptchaEnabled = (<HTMLInputElement>document.getElementById('p1reCaptchaEnabled'))
-      ? (<HTMLInputElement>document.getElementById('p1reCaptchaEnabled')).value : 'true';
-  }
-
-
-  changeBirthYear(selectedBirthYear) {
-    let _selectedYOB = selectedBirthYear;
-    if (this.isIOSDevice) {
-      _selectedYOB = parseInt(selectedBirthYear.target.value);
-    }
-    this.signUpForm.enable();
-    this.disableForm = false;
-    const currentYear = new Date().getFullYear();
-    this.yearOfBirth = `${_selectedYOB}`;
-    const userAge = currentYear - _selectedYOB;
-    this.isMinor = userAge < this.configService.constants.SIGN_UP.MINIMUN_AGE;
-  }
-
-  initiateYearSelecter() {
-    const endYear = new Date().getFullYear();
-    const startYear = endYear - this.configService.constants.SIGN_UP.MAX_YEARS;
-    for (let year = endYear; year > startYear; year--) {
-      this.birthYearOptions.push(year);
-    }
   }
 
   signUpTelemetryStart() {
@@ -230,6 +201,7 @@ allInstitutions: any;
   }
 
   initializeFormFields() {
+<<<<<<< HEAD
     if(this.isLearnathon){
       this.signUpForm = this.sbFormBuilder.group({
         name: new FormControl(null, [Validators.required]),
@@ -637,35 +609,33 @@ allInstitutions: any;
           this.signUpForm.controls.phone.value.toString() : this.signUpForm.controls.email.value,
         'type': this.signUpForm.controls.contactType.value.toString()
       }
+=======
+    this.signUpForm = {
+      basicInfo: null,
+      // onboardingInfo: null,
+      emailPassInfo: null
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
     };
-    if (this.isMinor) {
-      request.request['templateId'] = this.configService.constants.TEMPLATES.VERIFY_OTP_MINOR;
-    }
-    this.signupService.generateOTPforAnonymousUser(request, captchaResponse).subscribe(
-      (data: ServerResponse) => {
-        this.showSignUpForm = false;
-        this.disableSubmitBtn = false;
-      },
-      (err) => {
-        const failedgenerateOTPMessage = (_.get(err, 'error.params.status') && err.error.params.status === 'PHONE_ALREADY_IN_USE') ||
-          (_.get(err, 'error.params.status') &&
-            err.error.params.status === 'EMAIL_IN_USE') ? err.error.params.errmsg : this.resourceService.messages.fmsg.m0085;
-        this.toasterService.error(failedgenerateOTPMessage);
-        if (this.isP1CaptchaEnabled === 'true') { this.resetGoogleCaptcha(); }
-        this.disableSubmitBtn = false;
-      }
-    );
   }
 
-  resetGoogleCaptcha() {
-    const element: HTMLElement = document.getElementById('resetGoogleCaptcha') as HTMLElement;
-    element.click();
+  subformInitialized(name: string, group: object) {
+    this.signUpForm[name] = group
   }
 
-  showParentForm(event) {
-    if (event === 'true') {
-      this.initializeFormFields();
-      this.showSignUpForm = true;
+  changeStep() {
+    switch(this.signupStage) {
+      case this.Stage.BASIC_INFO:
+      //   this.signupStage = this.Stage.ONBOARDING_INFO;
+      //   break;
+      // case this.Stage.ONBOARDING_INFO:
+        this.signupStage = this.Stage.EMAIL_PASSWORD;
+        break;
+      case this.Stage.EMAIL_PASSWORD:
+        this.signupStage = this.Stage.OTP;
+        break;
+      default:
+        this.signupStage = this.Stage.BASIC_INFO;
+        break;
     }
   }
 
@@ -690,54 +660,17 @@ allInstitutions: any;
       type: 'click',
       pageid: 'signup',
       extra: {
-        'contactType': this.signUpForm.controls.contactType.value.toString()
+        // 'contactType': this.signUpForm.controls.contactType.value.toString()
       }
     };
   }
 
-  generateTelemetry(e) {
-    const selectedType = e.target.checked ? 'selected' : 'unselected';
-    const interactData = {
-      context: {
-        env: 'self-signup',
-        cdata: [
-          {id: 'user:tnc:accept', type: 'Feature'},
-          {id: 'SB-16663', type: 'Task'}
-        ]
-      },
-      edata: {
-        id: 'user:tnc:accept',
-        type: 'click',
-        subtype: selectedType,
-        pageid: 'self-signup'
-      }
-    };
-    this.telemetryService.interact(interactData);
+  redirectToLogin () {
+    // this.router.navigate(['/resources/play/content']);
+    // this.router.navigate(['/resources']);
+    window.location.href = '/resources';
   }
-
-  telemetryLogEvents(api: any, status: boolean) {
-    let level = 'ERROR';
-    let msg = api + ' failed';
-    if (status) {
-      level = 'SUCCESS';
-      msg = api + ' success';
-    }
-    const event = {
-      context: {
-        env: 'self-signup'
-      },
-      edata: {
-        type: api,
-        level: level,
-        message: msg
-      }
-    };
-    this.telemetryService.log(event);
-  }
-
-  showAndHidePopup(mode: boolean) {
-    this.showTncPopup = mode;
-  }
+<<<<<<< HEAD
 
   categoryChange(event){
     this.selectedCategory = event
@@ -783,4 +716,7 @@ allInstitutions: any;
     console.log(showLanguageChangeDropdown)
     return showLanguageChangeDropdown;
   }
+=======
+  
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
 }

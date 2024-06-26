@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
-import { ConfigService } from '@sunbird/shared';
-import { LearnerService } from '@sunbird/core';
+import { Injectable } from "@angular/core";
+import { ConfigService } from "@sunbird/shared";
+import { LearnerService } from "@sunbird/core";
 
 import { HttpClient, HttpResponse } from '@angular/common/http';
 // import { PublicDataService } from '../../../core/services/public-data/public-data.service';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AddusserService {
   public config: ConfigService;
+<<<<<<< HEAD
   constructor(private learnerService: LearnerService, 
     public configService: ConfigService, 
 
@@ -98,53 +99,93 @@ export class AddusserService {
   userUnBlock(data)
   {  
    
+=======
+  constructor(
+    private learnerService: LearnerService,
+    public configService: ConfigService
+  ) {}
+
+  createUserDetailSave(data) {
+    console.log(data);
     const options = {
-      url: this.configService.urlConFig.URLS.ADMIN.UNDELETE_USER,
-      data: data
+      url: this.configService.urlConFig.URLS.USER.SIGNUP,
+      data: data,
     };
     return this.learnerService.post(options);
-  
   }
-  addroleSubRootOrganization(data)
-  {
+  userSearch(data) {
     const options = {
-      url: this.configService.urlConFig.URLS.USER.ORG_ADD,
-      data: data
+      url: this.configService.urlConFig.URLS.ADMIN.USER_SEARCH,
+      data: data,
     };
-    return this.learnerService.patch(options);
+    return this.learnerService.post(options);
   }
 
-  addroleRootOrganization(data)
-  {
+  orgSearch(data) {
     const options = {
-      url: this.configService.urlConFig.URLS.ADMIN.UPDATE_USER_ORG_ROLES,
-      data: data
+      url: this.configService.urlConFig.URLS.ADMIN.ORG_SEARCH_OLD,
+      data: data,
     };
     return this.learnerService.post(options);
   }
-  getEditUserById(data)
-  {
+
+  getOrgDetail(data) {
+    const options = {
+      url: this.configService.urlConFig.URLS.ADMIN.ORG_SEARCH_OLD,
+      data: data,
+    };
+    return this.learnerService.post(options);
+  }
+
+  userBlock(data) {
+    const options = {
+      url: this.configService.urlConFig.URLS.ADMIN.DELETE_USER,
+      data: data,
+    };
+    return this.learnerService.post(options);
+  }
+  userUnBlock(data) {
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
+    const options = {
+      url: this.configService.urlConFig.URLS.ADMIN.UNDELETE_USER,
+      data: data,
+    };
+    return this.learnerService.post(options);
+  }
+  addroleSubRootOrganization(data) {
+    const options = {
+      url: this.configService.urlConFig.URLS.ADMIN.UPDATE_USER_ORG_ROLES,
+      data: data,
+    };
+    return this.learnerService.post(options);
+  }
+
+  addroleRootOrganization(data) {
+    const options = {
+      url: this.configService.urlConFig.URLS.ADMIN.UPDATE_USER_ORG_ROLES,
+      data: data,
+    };
+    return this.learnerService.post(options);
+  }
+  getEditUserById(data) {
     const option = {
-      url: this.configService.urlConFig.URLS.USER.READ +'/'+data
+      url: this.configService.urlConFig.URLS.USER.GET_PROFILE + data,
     };
     return this.learnerService.get(option);
   }
-  updateUserData(data)
-  {
+  updateUserData(data) {
     const options = {
       url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
-      data: data
+      data: data,
     };
     return this.learnerService.patch(options);
   }
-  removeOrg(data)
-  {
+  removeOrg(data) {
     const options = {
       url: this.configService.urlConFig.URLS.ORGANIZATION.MEMBERREMOVE,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
-
   }
 
   //organization service code
@@ -152,14 +193,14 @@ export class AddusserService {
   getorgData(data) {
     const options = {
       url: this.configService.urlConFig.URLS.ORGANIZATION.READ,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
   }
   getSuborgData(data) {
     const options = {
       url: this.configService.urlConFig.URLS.ADMIN.ORG_SEARCH_OLD,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
   }
@@ -168,17 +209,16 @@ export class AddusserService {
     console.log(data);
     const options = {
       url: this.configService.urlConFig.URLS.ORGANIZATION.UPDATE,
-      data: data
+      data: data,
     };
     return this.learnerService.patch(options);
   }
-
 
   updateOrgStatusDetail(data) {
     console.log(data);
     const options = {
       url: this.configService.urlConFig.URLS.ORGANIZATION.STATUSUPDATE,
-      data: data
+      data: data,
     };
     return this.learnerService.patch(options);
   }
@@ -187,17 +227,16 @@ export class AddusserService {
     console.log(data);
     const options = {
       url: this.configService.urlConFig.URLS.ADMIN.ORG_CREATE,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
   }
-
 
   createRootOrgDetailSave(data) {
     console.log(data);
     const options = {
       url: this.configService.urlConFig.URLS.ADMIN.ORG_CREATE,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
   }
@@ -206,37 +245,37 @@ export class AddusserService {
     console.log(data);
     const options = {
       url: this.configService.urlConFig.URLS.ORGANIZATION.FORMCREATEORG,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
   }
 
-
-  bulkUserUpload(data){
+  bulkUserUpload(data) {
     const options = {
       url: this.configService.urlConFig.URLS.ADMIN.BULK.USERS_UPLOAD,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
   }
 
-  updatePatch(data,orgId)
-  {
+  updatePatch(data, orgId) {
     console.log(data);
     const options = {
-      url: this.configService.urlConFig.URLS.ORGANIZATION.UPDATEPATCH+'/'+orgId,
-      data: data
+      url:
+        this.configService.urlConFig.URLS.ORGANIZATION.UPDATEPATCH +
+        "/" +
+        orgId,
+      data: data,
     };
     return this.learnerService.patch(options);
   }
 
-  createPreference(data){
+  createPreference(data) {
     const options = {
       url: this.configService.urlConFig.URLS.ORGANIZATION.PREFERENCES_CREATE,
-      data: data
+      data: data,
     };
     return this.learnerService.post(options);
   }
-   //organization service code
-  
+  //organization service code
 }

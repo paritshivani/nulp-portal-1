@@ -1,3 +1,4 @@
+<<<<<<< HEAD
   <div class="signup-background">
     <div class="fullpage-background-image">
       <div class="container-wrapper">
@@ -166,9 +167,49 @@
         </div>
         <div *ngIf="!showSignUpForm">
           <app-otp [isMinor]="isMinor" [yearOfBirth]="yearOfBirth" [signUpdata]="signUpForm" [tncLatestVersion]="tncLatestVersion" (redirectToParent)="showParentForm($event)"></app-otp>
-        </div>
-      </div>
+=======
+<!-- New Design code for Registration page -->
+
+<div class="layout">
+  <div class="left-panel">
+    <div class="image"><img alt={{tenantName}} src="{{logo}}">
     </div>
   </div>
-  <app-tnc-popup (close)="showAndHidePopup(false)" [tncUrl]="termsAndConditionLink" #termsAndCondPopUp *ngIf="showTncPopup">
-  </app-tnc-popup>  
+
+
+  <div class="right-panel d-flex flex-dc">
+    <div class="login-content w-100 fix-bottom">
+      <label class="mb-0 mx-8">{{resourceService.frmelmnts?.lbl?.haveaccount}}</label>
+      <button class="sb-btn sb-btn-normal sb-btn-outline-primary text-uppercase" (click)="redirectToLogin()"
+        aria-label="Already have an account? Login here" tabindex="0"
+        type="submit">{{resourceService.frmelmnts?.btn?.login}}</button>
+    </div>
+
+    <div class="content-center-container">
+    <div class="logo-content">
+        <div class="text-center mb-8">
+          <img class="image centered" tabindex="0" aria-label="" alt={{tenantName}} height="56" src="{{logo}}">
+>>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
+        </div>
+        <h3 tabindex="0" class="sb-color-primary text-center font-weight-bold mb-8">
+          {{resourceService.frmelmnts.lbl.welcomeToInstance | interpolate:'{instance}': instance}}</h3>
+    </div>
+
+    <ng-container [ngSwitch]="signupStage">
+              <app-signup-basic-info [isIOSDevice]="isIOSDevice" [telemetryImpression]="telemetryImpression"
+                [submitInteractEdata]="submitInteractEdata" [telemetryCdata]="telemetryCdata"
+                *ngSwitchCase="Stage.BASIC_INFO" [startingForm]="signUpForm"
+                (subformInitialized)="subformInitialized('basicInfo', $event)" (triggerNext)="changeStep()">
+              </app-signup-basic-info>
+              <!-- <app-signup-onboarding-info *ngSwitchCase="Stage.ONBOARDING_INFO" [startingForm]="signUpForm" 
+                (subformInitialized)="subformInitialized('onboardingInfo', $event)" (triggerNext)="changeStep()">
+              </app-signup-onboarding-info> -->
+              <app-signup-email-password *ngSwitchCase="Stage.EMAIL_PASSWORD" [startingForm]="signUpForm" 
+                (subformInitialized)="subformInitialized('emailPassInfo', $event)" (triggerNext)="changeStep()">
+              </app-signup-email-password>
+              <app-otp class="w-100" *ngSwitchCase="Stage.OTP" [startingForm]="signUpForm" (triggerNext)="changeStep()"></app-otp>
+    </ng-container>
+  </div>
+  </div>
+
+</div>
