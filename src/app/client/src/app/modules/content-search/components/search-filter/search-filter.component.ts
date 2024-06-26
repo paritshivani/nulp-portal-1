@@ -425,10 +425,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       switchMap(_ => this._filterConfig$),
       tap((config: IFrameworkCategoryFilterFieldTemplateConfig[]) => {
         this.filterFormTemplateConfig = config;
-<<<<<<< HEAD
-=======
-        // console.log("filterFormTemplateConfig", this.filterFormTemplateConfig);
->>>>>>> 7f699309db7c687d8914d2d5490d80bf0daefafe
         this.refreshSearchFilterComponent = false;
         this.cdr.detectChanges();
         this.refreshSearchFilterComponent = true;
